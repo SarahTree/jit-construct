@@ -21,6 +21,7 @@
 
 #define Dst &state
 #define MAX_NESTING 256
+#define Array_SIZE 128
 
 int continuous_count(char *p)
 {
@@ -58,7 +59,7 @@ int check_loops(char *p,int *index,int *mult)
 
 int main(int argc, char *argv[])
 {
-	int idx[100]={0},mult[100]={0};
+	int idx[Array_SIZE]={0},mult[Array_SIZE]={0};
 	if (argc < 2) err("Usage: jit-x64 <inputfile>");
 	dasm_State *state;
 	initjit(&state, actions);
@@ -129,29 +130,28 @@ int main(int argc, char *argv[])
 			
 			
 				
-				_index=check_loops(p,idx,mult);
+			_index=check_loops(p,idx,mult);
 				
-				length = sizeof (index) / sizeof (int);
-				if(_index==0){
-					|	mov byte [PTR], 0
+			length = sizeof (index) / sizeof (int);
+			if(_index==0){
+				|	mov byte [PTR], 0
+			}
+			else{
+				while(i<length){
+				|	push r8
+				|	push r9
+				|	movzx r8, byte [PTR]
+				|	imul r8, mult[i]
+				|	mov r9, PTR
+				|   add r9,idx[i]
+				|   add byte [r9],r8b
+				|   mov byte [PTR],0
+				|   pop r9
+				|   pop r8
+				i++;
 				}
-				else{
 					
-					while(i<length){
-					|	push r8
-					|	push r9
-					|	movzx r8, byte [PTR]
-					|	imul r8, mult[i]
-					|	mov r9, PTR
-					|   add r9,idx[i]
-					|   add byte [r9],r8b
-					|   mov byte [PTR],0
-					|   pop r9
-					|   pop r8
-					i++;
-					}
-					
-				}
+			}
 			
 			maxpc += 2;
 			*top++ = maxpc;
