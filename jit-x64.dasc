@@ -128,8 +128,6 @@ int main(int argc, char *argv[])
 			|	mov byte [PTR], 0
 			}*/
 			
-			
-				
 			_index=check_loops(p,idx,mult);
 				
 			length = sizeof (index) / sizeof (int);
@@ -150,7 +148,6 @@ int main(int argc, char *argv[])
 				|   pop r8
 				i++;
 				}
-					
 			}
 			
 			maxpc += 2;
